@@ -47,6 +47,16 @@ export async function createLaunchpadPurchaseOrderNumberCustomType(): Promise<vo
             },
             required: false,
           },
+          {
+            type: {
+              name: 'String',
+            },
+            name: launchpadPurchaseOrderCustomType.vorkasse,
+            label: {
+              en: 'Vorkasse',
+            },
+            required: false,
+          },
         ],
       },
     })

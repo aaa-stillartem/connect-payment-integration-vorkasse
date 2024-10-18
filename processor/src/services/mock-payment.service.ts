@@ -20,7 +20,7 @@ import { AbstractPaymentService } from './abstract-payment.service';
 import { getConfig } from '../config/config';
 import { appLogger, paymentSDK } from '../payment-sdk';
 import { CreatePaymentRequest, MockPaymentServiceOptions } from './types/mock-payment.type';
-import { PaymentMethodType, PaymentOutcome, PaymentResponseSchemaDTO } from '../dtos/mock-payment.dto';
+import { PaymentMethodType, PaymentOutcome, PaymentOutcomeSchema, PaymentResponseSchemaDTO } from '../dtos/mock-payment.dto'
 import { getCartIdFromContext, getPaymentInterfaceFromContext } from '../libs/fastify/context/context';
 import { randomUUID } from 'crypto';
 import { launchpadPurchaseOrderCustomType } from '../custom-types/custom-types';
@@ -127,6 +127,9 @@ export class MockPaymentService extends AbstractPaymentService {
         {
           type: PaymentMethodType.PURCHASE_ORDER,
         },
+        {
+          type: PaymentMethodType.VORKASSE,
+        },
       ],
     };
   }
@@ -182,6 +185,7 @@ export class MockPaymentService extends AbstractPaymentService {
   public async createPayment(request: CreatePaymentRequest): Promise<PaymentResponseSchemaDTO> {
     this.validatePaymentMethod(request);
 
+    const isVorkasse = request.data.paymentMethod.type === PaymentMethodType.VORKASSE;
     const ctCart = await this.ctCartService.getCart({
       id: getCartIdFromContext(),
     });
@@ -223,17 +227,8 @@ export class MockPaymentService extends AbstractPaymentService {
         type: 'Authorization',
         amount: ctPayment.amountPlanned,
         interactionId: pspReference,
-        state: this.convertPaymentResultCode(request.data.paymentOutcome),
+        state: isVorkasse ? 'Pending' : this.convertPaymentResultCode(request.data.paymentOutcome),
       },
-      ...(request.data.paymentMethod.type === PaymentMethodType.PURCHASE_ORDER && {
-        customFields: {
-          typeKey: launchpadPurchaseOrderCustomType.key,
-          fields: {
-            [launchpadPurchaseOrderCustomType.purchaseOrderNumber]: request.data.paymentMethod.poNumber,
-            [launchpadPurchaseOrderCustomType.invoiceMemo]: request.data.paymentMethod.invoiceMemo,
-          },
-        },
-      }),
     });
 
     return {

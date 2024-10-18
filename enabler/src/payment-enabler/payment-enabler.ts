@@ -167,6 +167,7 @@ export enum PaymentMethod {
   ideal = "ideal",
   /* iDeal */
   invoice = "invoice",
+  vorkasse = 'vorkasse',
   /* Klarna Pay Later */
   klarna_pay_later = "klarna",
   /* Klarna Pay Now */

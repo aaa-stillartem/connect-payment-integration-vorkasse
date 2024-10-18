@@ -11,6 +11,7 @@ import {
   PaymentResult,
 } from "./payment-enabler";
 import { DropinEmbeddedBuilder } from "../dropin/dropin-embedded";
+import { VorkasseBuilder } from '../components/payment-methods/vorkasse/vorkasse.ts'
 
 declare global {
   interface ImportMeta {
@@ -73,6 +74,7 @@ export class MockPaymentEnabler implements PaymentEnabler {
       card: CardBuilder,
       invoice: InvoiceBuilder,
       purchaseorder: PurchaseOrderBuilder,
+      vorkasse: VorkasseBuilder
     };
 
     if (!Object.keys(supportedMethods).includes(type)) {

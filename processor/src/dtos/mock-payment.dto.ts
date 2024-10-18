@@ -3,11 +3,13 @@ import { Static, Type } from '@sinclair/typebox';
 export enum PaymentOutcome {
   AUTHORIZED = 'Authorized',
   REJECTED = 'Rejected',
+  PENDING = 'Pending'
 }
 
 export enum PaymentMethodType {
   CARD = 'card',
   INVOICE = 'invoice',
+  VORKASSE = 'vorkasse',
   PURCHASE_ORDER = 'purchaseorder',
 }
 
@@ -22,6 +24,7 @@ export const PaymentRequestSchema = Type.Object({
     type: Type.Enum(PaymentMethodType),
     poNumber: Type.Optional(Type.String()),
     invoiceMemo: Type.Optional(Type.String()),
+    vorkasse: Type.Optional(Type.String()),
   }),
   paymentOutcome: PaymentOutcomeSchema,
 });
